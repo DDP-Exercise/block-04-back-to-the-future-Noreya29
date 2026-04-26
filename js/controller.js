@@ -31,7 +31,43 @@
  *     Now hurry Marty! Or I will be stuck in the past forever!
  *
  *     Doc Brown - 1955-11-05
+ *     Noreya Friesacher - 2025-04-26
  *******************************************************/
 
 // HINT:
 // setInterval(functionName, 1000); will call functionName() every 1000 miliseconds.
+
+import {Time} from "./model.time.js";
+import {analogoue} from "./view.analagoue.js";
+import {Digital} from "./view.digital.js";
+
+let controller = {
+    init() {
+        //Prepare model and views
+        Time.update();
+        Digital.init();
+        analogoue.init();
+
+        //update every second
+        this.loop();
+        setInterval(() => this.loop(), 1000);
+
+        //Button for saving
+        let btn = document.getElementById("save");
+        btn.addEventListener("click", () => {
+            localStorage.setItem("savedTime", JSON.stringify({
+                h: Time.hour,
+                m: Time.minute,
+                s: Time.second,
+            }));
+        });
+    },
+
+    loop() {
+        Time.update();
+        Digital.render(Time);
+        analogoue.render(Time);
+    }
+};
+
+controller.init();
